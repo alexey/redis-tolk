@@ -1,24 +1,51 @@
-Tolk is a Rails engine designed to facilitate the translators doing the dirty work of translating your application to other languages.
+Redis-Tolk is a Rails engine designed to facilitate the translators doing the dirty work of translating your application to other languages.
+Its based on original tolk plugin done by David (https://github.com/dhh/tolk/)
+
+This plugin will use Redis engine as storage and Ohm plugin for loading objects.
+
+For Redis you should use only string/nil values for keys, otherwise you will have incorrect values in the Redis :
+  weekdays: ["Sunday", "Monday", "Thuesday", "Wednesday", "Thursday", "Friday", "Saturday"]
+in redis become :
+weekdays=SundayMonday...
+
+So you have to simplify yml file :
+  weekdays:
+    - Sunday
+    - Monday
+    ..etc
+
+
+------------
 
 * Installation & Setup
 
 To install :
 
-  $ script/plugin install git://github.com/dhh/tolk.git
+  1) GEMs :
+  $ gem install ohm ya2yaml
+    (use sudo if needed)
+
+  2) REDIS :
+    http://jimneath.org/2011/03/24/using-redis-with-ruby-on-rails.html
+
+  3) REDIS-TOLK:
+    $ script/plugin install git://github.com/alexey/redis-tolk.git
 
 To setup :
 
-  1) Generate tolk migration and migrate your database :
+  1) Setup Tolk assets by creating a symlink to tolk/public/tolk inside your application's public directory :
 
-  $ script/generate tolk_migration
-  $ rake db:migrate
+    $ cd public
+    $ ln -s ../vendor/plugins/tolk/public/tolk tolk
 
-  2) Setup Tolk assets by creating a symlink to tolk/public/tolk inside your application's public directory :
+  2) Create new redis namespace and tell to Ohm to what redis db to connect, last line of environment.rb :
+    Ohm.connect :db => 8 #use any index("namespace") that not in use
 
-  $ cd public
-  $ ln -s ../vendor/plugins/tolk/public/tolk tolk
+  3) Setup default locale as constant with symbolic link :
+    I18N_LOCALE = :en
+  And  you're all set!
 
-  And you're all set!
+------------
 
 * Usage
 

@@ -3,9 +3,9 @@ atom_feed do |feed|
 
   @phrases.each do |phrase|
     feed.entry(phrase, :url => tolk_locale_url(@locale)) do |entry|
-      entry.title(phrase.key)
-      entry.content(phrase.key)
-      entry.author {|author| author.name("Tolk") }
+      entry.title(phrase.pkey)
+      entry.content(phrase.pkey)
+      entry.author {|author| author.name("Tolk, Redis Tolk") }
     end
   end
 end

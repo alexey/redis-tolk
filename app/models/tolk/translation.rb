@@ -1,30 +1,54 @@
 module Tolk
-  class Translation < ActiveRecord::Base
-    set_table_name "tolk_translations"
+  class Translation < Ohm::Model ##ActiveRecord::Base
+    ##set_table_name "tolk_translations"
 
-    named_scope :containing_text, lambda { |query|
-      { :conditions => ["tolk_translations.text LIKE ?", "%#{query}%"] }
-    }
+    ##named_scope :containing_text, lambda { |query|
+    ##  { :conditions => ["tolk_translations.text LIKE ?", "%#{query}%"] }
+    ##}
 
-    serialize :text
-    validates_presence_of :text, :if => proc {|r| r.primary.blank? && !r.explicit_nil }
-    validate :check_matching_variables, :if => proc { |tr| tr.primary_translation.present? }
+    # TODO serialize :text
+    ## TODO change this validation to controller>> validates_presence_of :text, :if => proc {|r| r.primary.blank? && !r.explicit_nil }
+    ## TODO change this validation to controller>>validate :check_matching_variables, :if => proc { |tr| tr.primary_translation.present? }
 
-    validates_uniqueness_of :phrase_id, :scope => :locale_id
+    attribute :text          #TODO serialize
+    attribute :previous_text
+    attribute :primary_updated
 
-    belongs_to :phrase, :class_name => 'Tolk::Phrase'
-    belongs_to :locale, :class_name => 'Tolk::Locale'
+    index :primary_updated
+    index :text
+    ##validates_uniqueness_of :phrase_id, :scope => :locale_id
+
+    ##belongs_to :phrase, :class_name => 'Tolk::Phrase'
+    ##belongs_to :locale, :class_name => 'Tolk::Locale'
+
+    reference :phrase, Tolk::Phrase
+    reference :locale, Tolk::Locale
 
     attr_accessor :force_set_primary_update
-    before_save :set_primary_updated
 
-    before_save :set_previous_text
+    ## TODO change this validation to controller>> before_save :set_primary_updated
+    ## TODO change this validation to controller>> before_save :set_previous_text
 
     attr_accessor :primary
-    before_validation :fix_text_type, :unless => proc {|r| r.primary }
+    ## TODO change this validation to controller>> before_validation :fix_text_type, :unless => proc {|r| r.primary }
 
     attr_accessor :explicit_nil
-    before_validation :set_explicit_nil
+    ## TODO change this validation to controller>> before_validation :set_explicit_nil
+
+    def validate
+      assert_unique [:phrase_id, :locale_id]
+    end
+
+    # Ohm : find translation by part of text
+    def containing_text(query)
+      coll = []
+      all.collect {|tr| coll << tr if tr.text =~ /(#{query})/i }
+      coll
+    end
+
+    def primary_updated?
+      primary_updated.to_s == "true"
+    end
 
     def up_to_date?
       not out_of_date?
@@ -42,9 +66,9 @@ module Tolk
       end
     end
 
-    def text=(value)
-      super unless value.to_s == text
-    end
+##    def text=(value)
+##      super unless value.to_s == text
+##    end
 
     def value
       if text.is_a?(String) && /^\d+$/.match(text)

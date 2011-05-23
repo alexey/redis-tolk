@@ -132,6 +132,6 @@ class FormatTest < ActiveSupport::TestCase
   private
 
   def ph(key)
-    Tolk::Phrase.all.detect {|p| p.key == key}
+    Tolk::Phrase.all.detect {|p| p.pkey == key}
   end
 end

@@ -26,7 +26,7 @@
               <%= hidden_field_tag :"translations[][id]", phrase.translation.id %>
               <%= hidden_field_tag :"translations[][locale_id]", phrase.translation.locale_id %>
               <%= text_area_tag :"translations[][text]", format_i18n_text_area_value(phrase.translation.text), :class => 'locale',
-                                :onfocus => "$(this).up('tr').addClassName('active');", :onblur => "$(this).up('tr').removeClassName('active');" %>
+                                :onfocus => "$(this).parents('tr')[0].className = 'active';", :onblur => "$(this).parents('tr')[0].className = '';" %>
             </td>
             <td class="phrase">
 
@@ -43,7 +43,7 @@
                 <%= format_i18n_value(phrase.translations.primary.text) -%>
               <% end %>
 
-              <span class="key"><%= phrase.key %></span>
+              <span class="key"><%= phrase.pkey %></span>
             </td>
           </tr>
         <% end %>
@@ -53,7 +53,7 @@
       <p><%= locale_form.submit "Save changes" %></p>
     </div>
     <div class="paginate">
-      <%= will_paginate @phrases, :renderer => Tolk::LinkRenderer %>
+      <%##= will_paginate @phrases, :renderer => Tolk::LinkRenderer %>
     </div>
   <% end %>
 <% else %>

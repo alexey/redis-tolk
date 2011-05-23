@@ -19,7 +19,7 @@ namespace :tolk do
   task :html_keys => :environment do
     bad_translations = Tolk::Locale.primary_locale.translations_with_html
     bad_translations.each do |bt|
-      puts "#{bt.phrase.key} - #{bt.text}"
+      puts "#{bt.phrase.pkey} - #{bt.text}"
     end
   end
 end

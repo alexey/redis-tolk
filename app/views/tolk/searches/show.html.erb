@@ -36,7 +36,7 @@
                 <% else -%>
                   <%= format_i18n_value(phrase.translations.primary.text) -%>
                 <% end -%>
-                <span class="key" title="<%= phrase.key %>"><%= truncate(phrase.key, :length => 100) %></span>
+                <span class="key" title="<%= phrase.pkey %>"><%= truncate(phrase.pkey, :length => 100) %></span>
               </td>
             </tr>
           <% end %>
